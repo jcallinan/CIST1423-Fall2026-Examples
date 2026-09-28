@@ -1,6 +1,5 @@
 # Week 2 — Panther Cam & Cast starter scene
-
-Bare-bones fishing-sim scaffold, built the same way Rhodium builds its scenes: an
+These are built via a script an
 Editor menu command assembles primitives, not hand-placed GameObjects.
 
 ## Use it

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, shrink-to-fit=no"
+		/>
+		<title>Pitt Bradford Panther Showcase • Alumni Weekend 2026</title>
+		<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+		<meta property="og:title" content="Pitt Bradford Panther Showcase" />
+		<meta property="og:type" content="website" />
+		<meta
+			property="og:description"
+			content="Customize and resize the University of Pittsburgh at Bradford Panther in Mixed Reality for Alumni Weekend 2026"
+		/>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			crossorigin="anonymous"
+		/>
+	</head>
+	<body>
+		<div class="root">
+			<!-- 3D WebXR Viewport -->
+			<div id="scene-container">
+				<div class="preview-overlay-instructions">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+					</svg>
+					<span>Left-click & drag to rotate • Scroll to zoom • Right-click to pan</span>
+				</div>
+				<div id="xr-debug-panel" aria-live="polite">
+					<div class="xr-debug-header">XR Debug</div>
+					<div id="xr-debug-log"></div>
+				</div>
+			</div>
+
+			<!-- Customization & Sizing Sidebar -->
+			<div id="config-panel">
+				<div class="brand-badge">
+					<span class="dot"></span>
+					VR Lab • Alumni Weekend 2026
+				</div>
+
+				<div class="headline">University of Pittsburgh at Bradford</div>
+				<h1 class="product-title">Panther Statue Customizer</h1>
+				<p class="product-description">
+					Interact with the high-resolution 3D photogrammetry scan of the campus Pitt Bradford Panther statue. Customize statue finishes, adjust scale from tabletop to life-size 1:1, or inspect in Mixed Reality!
+				</p>
+
+				<!-- Finish Selection -->
+				<div class="section-label">
+					<span class="config-title">Statue Finish</span>
+					<span class="current-status" id="current-finish-name">Original 3D Scan</span>
+				</div>
+				<div class="finishes-grid">
+					<button class="finish-btn selected" data-finish-id="scan" title="Photogrammetry Scan">
+						<div class="color-swatch" style="background: radial-gradient(circle, #b8a99a 0%, #6e5e4e 100%);"></div>
+						<span>Campus Scan</span>
+					</button>
+					<button class="finish-btn" data-finish-id="pitt_blue" title="Pitt Royal Blue">
+						<div class="color-swatch" style="background: #003594;"></div>
+						<span>Pitt Blue</span>
+					</button>
+					<button class="finish-btn" data-finish-id="pitt_gold" title="Pitt Athletic Gold">
+						<div class="color-swatch" style="background: linear-gradient(135deg, #ffd05b 0%, #d99b16 100%);"></div>
+						<span>Pitt Gold</span>
+					</button>
+					<button class="finish-btn" data-finish-id="bronze" title="Classic Cast Bronze">
+						<div class="color-swatch" style="background: linear-gradient(135deg, #a6723f 0%, #543719 100%);"></div>
+						<span>Cast Bronze</span>
+					</button>
+					<button class="finish-btn" data-finish-id="marble" title="Polished White Marble">
+						<div class="color-swatch" style="background: #eae6df;"></div>
+						<span>White Marble</span>
+					</button>
+					<button class="finish-btn" data-finish-id="onyx" title="Bradford Onyx">
+						<div class="color-swatch" style="background: #18181a;"></div>
+						<span>Bradford Onyx</span>
+					</button>
+				</div>
+
+				<!-- Sizing Controls -->
+				<div class="section-label">
+					<span class="config-title">Panther Scale</span>
+					<span class="current-status" id="scale-value-display">18% (50 cm)</span>
+				</div>
+
+				<!-- Size Presets -->
+				<div class="size-presets size-options" data-value="tabletop">
+					<button class="size-btn" data-size-id="mini">
+						<span class="size-name">Desk Mini</span>
+						<span class="size-height">20 cm miniature</span>
+					</button>
+					<button class="size-btn selected" data-size-id="tabletop">
+						<span class="size-name">Tabletop</span>
+						<span class="size-height">50 cm showcase</span>
+					</button>
+					<button class="size-btn" data-size-id="pedestal">
+						<span class="size-name">Pedestal</span>
+						<span class="size-height">1.2 m display</span>
+					</button>
+					<button class="size-btn" data-size-id="lifesize">
+						<span class="size-name">Life-Size Statue</span>
+						<span class="size-height">2.7 m campus (1:1)</span>
+					</button>
+					<button class="size-btn" data-size-id="monumental" style="grid-column: span 2;">
+						<span class="size-name">Monumental Mascot</span>
+						<span class="size-height">4.0 m grand monument</span>
+					</button>
+				</div>
+
+				<!-- Continuous Scale Slider -->
+				<div class="slider-container">
+					<div class="slider-header">
+						<span>Continuous Fine Tuning</span>
+						<span>0.05x &ndash; 1.5x</span>
+					</div>
+					<div class="slider-controls-row">
+						<button class="step-btn" id="btn-scale-down" title="Decrease Size">&minus;</button>
+						<input
+							type="range"
+							id="panther-scale-slider"
+							min="0.05"
+							max="1.5"
+							step="0.01"
+							value="0.18"
+						/>
+						<button class="step-btn" id="btn-scale-up" title="Increase Size">&plus;</button>
+					</div>
+				</div>
+
+				<!-- WebXR / AR Action -->
+				<div class="ar-actions">
+					<button id="ar-button" class="customize-button">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<rect x="2" y="6" width="20" height="12" rx="3"></rect>
+							<circle cx="8" cy="12" r="2"></circle>
+							<circle cx="16" cy="12" r="2"></circle>
+						</svg>
+						View in Mixed Reality
+					</button>
+					<div id="ar-status-message" class="support-message" hidden>
+						This browser/device doesn’t look like it supports WebXR AR yet. You can still try it, but it may not work.
+					</div>
+				</div>
+
+				<div class="footer-info">
+					Alumni & Family Weekend 2026 &bull;  VR Lab
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

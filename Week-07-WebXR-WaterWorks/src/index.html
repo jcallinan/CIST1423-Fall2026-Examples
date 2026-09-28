@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+		<title>WaterWorks Builder • CIST 1423</title>
+		<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+		<meta property="og:title" content="WaterWorks Builder" />
+		<meta property="og:description" content="Build a small water system (pumps, pipes, valves, tanks) together in VR, MR or a browser." />
+	</head>
+	<body>
+		<div class="root">
+			<div id="scene-container">
+				<div class="help-overlay">
+					Drag a part to move it · <b>Shift</b>+drag to lift · <b>R</b>/<b>T</b>/<b>E</b> rotate · <b>V</b> valve ·
+					<b>Del</b> remove · drag empty space to orbit
+				</div>
+			</div>
+
+			<div id="config-panel">
+				<div class="brand-badge"><span class="dot"></span>CIST 1423 • VR Lab</div>
+				<h1 class="product-title">WaterWorks Builder</h1>
+				<p class="product-description">
+					Lay out a small water system together: pumps, pipes, valves, tanks and hydrants. Ends snap together when
+					they're close. Orange rings are open ports, green rings are connected.
+				</p>
+
+				<div class="card">
+					<div class="row">
+						<span id="net-status" data-status="offline">Offline (single player)</span>
+						<span class="muted">room <b id="room-name">lab</b></span>
+					</div>
+					<label class="field">Your name <input id="player-name" maxlength="24" /></label>
+					<ul id="people-list"></ul>
+					<div class="muted" id="part-count">0 parts</div>
+				</div>
+
+				<div class="section-label">Parts</div>
+				<div id="parts-palette"></div>
+
+				<div id="selection-info" class="card" hidden>
+					<div class="selection-name" id="selection-name"></div>
+					<div class="muted" id="selection-desc"></div>
+					<div class="selection-buttons">
+						<button id="btn-rot-y" title="R">Turn ↻ (R)</button>
+						<button id="btn-rot-x" title="T">Tip (T)</button>
+						<button id="btn-rot-z" title="E">Roll (E)</button>
+						<button id="btn-valve" hidden>Close valve (V)</button>
+						<button id="btn-delete" class="danger">Remove (Del)</button>
+					</div>
+				</div>
+
+				<div class="xr-actions">
+					<button id="ar-button" class="customize-button">Enter VR / MR</button>
+					<div id="xr-status-message" class="muted" hidden>
+						Open this page in a headset browser (Quest Browser, or Chrome/Edge with SteamVR running) to build in VR.
+					</div>
+					<button id="clear-all" class="link-button">Clear all parts</button>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

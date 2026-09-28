@@ -13,3 +13,57 @@
 *.user
 *.userprefs
 .vs/
+
+# Node / web builds (panther-builder and any future WebXR example)
+node_modules/
+dist/
+
+# OS junk
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# ---------------------------------------------------------------------------
+# GolfVR (Alumni-Weekend-2026/GolfVR/GolfVR)
+# ---------------------------------------------------------------------------
+# Per-machine copy of the SteamVR input bindings, written by SteamVR's binding UI.
+# The real, committed bindings live in Assets/StreamingAssets/SteamVR/.
+Alumni-Weekend-2026/GolfVR/GolfVR/SteamVR_SteamVR_*/
+
+# Asset Store pack content that no GolfVR scene uses. Found by following GUID
+# references (scene -> prefab -> material -> texture, plus FBX .meta material remaps)
+# out from every scene in Assets/Scenes. ~870 MB. The rest of each pack IS used and
+# stays tracked. If you start using something from one of these folders, delete its
+# line here and commit it, or it will be missing for everyone else.
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/Survival?Props/textures/
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/Survival?Props/textures.meta
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/FlipGameDev/Terrain&GrassPack/Art/Textures/Terrain_Textures/
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/FlipGameDev/Terrain&GrassPack/Art/Textures/Terrain_Textures.meta
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/FlipGameDev/Terrain&GrassPack/Terrain_Settings/
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/FlipGameDev/Terrain&GrassPack/Terrain_Settings.meta
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/FlipGameDev/Terrain&GrassPack/Demo/
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/FlipGameDev/Terrain&GrassPack/Demo.meta
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/Fantasy?Skybox?FREE/Scenes/
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/Fantasy?Skybox?FREE/Scenes.meta
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/Fantasy?Skybox?FREE/Panoramics/
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/Fantasy?Skybox?FREE/Panoramics.meta
+# Pack documentation (19 MB PDF); not an asset.
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/FlipGameDev/Terrain&GrassPack/Terrain&GrassPack_Documentation_v1_0.pdf
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/FlipGameDev/Terrain&GrassPack/Terrain&GrassPack_Documentation_v1_0.pdf.meta
+
+# Second copy of the raw Scaniverse exports inside GolfVR. No scene uses them, and the originals
+# are kept in Alumni-Weekend-2026/Scaniverse Models. (The .obj/.mtl/.jpg in that folder ARE used:
+# the .obj is placed in scenes and Unity finds its texture by file name, so they stay tracked.)
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/GolfAssets/Models/Panther/Scaniverse?Models/Scaniverse?2026-09-02?181726.fbx
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/GolfAssets/Models/Panther/Scaniverse?Models/Scaniverse?2026-09-02?181726.fbx.meta
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/GolfAssets/Models/Panther/Scaniverse?Models/Scaniverse?2026-09-02?181726.ply
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/GolfAssets/Models/Panther/Scaniverse?Models/Scaniverse?2026-09-02?181726.ply.meta
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/GolfAssets/Models/Panther/Scaniverse?Models/Scaniverse?2026-09-02?181726.stl
+Alumni-Weekend-2026/GolfVR/GolfVR/Assets/GolfAssets/Models/Panther/Scaniverse?Models/Scaniverse?2026-09-02?181726.stl.meta
+
+# ---------------------------------------------------------------------------
+# Scaniverse exports
+# ---------------------------------------------------------------------------
+# Byte-for-byte duplicate of the extracted "Scaniverse 2026-09-02 181726/" folder next to it.
+Alumni-Weekend-2026/Scaniverse?Models/Scaniverse?2026-09-02?181726.zip
+Alumni-Weekend-2026/Scaniverse?Models/University?of?Pittsburgh?at?Bradford.7z
