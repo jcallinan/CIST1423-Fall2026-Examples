@@ -28,11 +28,6 @@ Week 7 (*AR Development in Unity II*) is **WebXR building** instead.
 
 ![WaterWorks Builder: two browsers and a headset user building together](Week-07-WebXR-WaterWorks/docs/waterworks-multiplayer.png)
 
-`Week-02-PantherCamCast` is the starting point for the cross-class Alumni &
-Family Weekend project: photograph the campus Panther statue, turn it into a
-3D model, and build a VR fishing simulator around it for the Sept 25–27
-public demo. See the Week 2 slide deck for the full plan.
-
 ## Alumni & Family Weekend 2026
 
 [`Alumni-Weekend-2026`](Alumni-Weekend-2026) holds the two finished lab showcases:
