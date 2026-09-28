@@ -10,7 +10,7 @@ Week 7 (*AR Development in Unity II*) is **WebXR building** instead.
 | Week | Topic | Example code |
 | --- | --- | --- |
 | 1 | Intro to course & brainstorming (Ch. 1) | — |
-| 2 | Unity Editor & Scene Creation I | [`Week-02-PrimitivesLab`](Week-02-PrimitivesLab) |
+| 2 | Unity Editor & Scene Creation I | [`Week-02-PrimitivesLab`](Week-02-PrimitivesLab), 
 | 3 | Unity Editor & Scene Creation II (Exam 1) | — |
 | 4 | VR Development in Unity I: SteamVR setup | [`Week-04-SteamVR-Setup`](Week-04-SteamVR-Setup) |
 | 5 | VR Development in Unity II: SteamVR Interaction System | [`Week-05-SteamVR-Interactions`](Week-05-SteamVR-Interactions) |
@@ -28,6 +28,11 @@ Week 7 (*AR Development in Unity II*) is **WebXR building** instead.
 
 ![WaterWorks Builder: two browsers and a headset user building together](Week-07-WebXR-WaterWorks/docs/waterworks-multiplayer.png)
 
+`Week-02-PantherCamCast` is the starting point for the cross-class Alumni &
+Family Weekend project: photograph the campus Panther statue, turn it into a
+3D model, and build a VR fishing simulator around it for the Sept 25–27
+public demo. See the Week 2 slide deck for the full plan.
+
 ## Alumni & Family Weekend 2026
 
 [`Alumni-Weekend-2026`](Alumni-Weekend-2026) holds the two finished lab showcases:
@@ -36,21 +41,3 @@ Week 7 (*AR Development in Unity II*) is **WebXR building** instead.
 - [`panther-builder`](Alumni-Weekend-2026/panther-builder): a WebXR Panther statue customizer forked from Meta's Sneaker Builder.
   [`FROM-SNEAKER-TO-PANTHER.md`](Alumni-Weekend-2026/panther-builder/FROM-SNEAKER-TO-PANTHER.md) explains every change.
 
-## Why SteamVR (and not the textbook's XR Interaction Toolkit)?
-
-The VR Lab's HTC Vive Pro headsets run through SteamVR, and so does the Alumni Weekend
-project. The syllabus chapters still apply. Weeks 4 and 5 map each XRI concept to its
-SteamVR Interaction System equivalent.
-
-## Lesson plans
-
-[`Lesson-Plans`](Lesson-Plans) has the instructor's semester overview: class format, objectives per week,
-lab prep, and safety. It also has minute-by-minute plans, with demo scripts, discussion answers and
-rubrics, for Week 4 (SteamVR setup), Week 5 (the SteamVR Playground), Week 7 (WebXR building) and
-Week 12 (multiplayer).
-
-## Slide decks
-
-[`Slide-Decks`](Slide-Decks) holds the weekly lecture decks (`.pptx`), Weeks 1–16. Week 5's deck covers
-Weeks 4–5 (SteamVR), alongside the Week 4 Alumni Weekend plan. Week 7 has two parts. Every deck from Week 3 on opens with a "Today" slide (objectives + timeline) and ends
-with a "Check your understanding" slide (answers in the speaker notes).
