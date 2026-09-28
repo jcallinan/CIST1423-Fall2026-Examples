@@ -10,7 +10,7 @@ Week 7 (*AR Development in Unity II*) is **WebXR building** instead.
 | Week | Topic | Example code |
 | --- | --- | --- |
 | 1 | Intro to course & brainstorming (Ch. 1) | — |
-| 2 | Unity Editor & Scene Creation I | [`Week-02-PrimitivesLab`](Week-02-PrimitivesLab), [`Week-02-PantherCamCast`](Week-02-PantherCamCast) |
+| 2 | Unity Editor & Scene Creation I | [`Week-02-PrimitivesLab`](Week-02-PrimitivesLab) |
 | 3 | Unity Editor & Scene Creation II (Exam 1) | — |
 | 4 | VR Development in Unity I: SteamVR setup | [`Week-04-SteamVR-Setup`](Week-04-SteamVR-Setup) |
 | 5 | VR Development in Unity II: SteamVR Interaction System | [`Week-05-SteamVR-Interactions`](Week-05-SteamVR-Interactions) |
@@ -27,11 +27,6 @@ Week 7 (*AR Development in Unity II*) is **WebXR building** instead.
 | 16 | Final exam | — |
 
 ![WaterWorks Builder: two browsers and a headset user building together](Week-07-WebXR-WaterWorks/docs/waterworks-multiplayer.png)
-
-`Week-02-PantherCamCast` is the starting point for the cross-class Alumni &
-Family Weekend project: photograph the campus Panther statue, turn it into a
-3D model, and build a VR fishing simulator around it for the Sept 25–27
-public demo. See the Week 2 slide deck for the full plan.
 
 ## Alumni & Family Weekend 2026
 

@@ -8,9 +8,8 @@ namespace SteamVRPlaygroundEditor
 {
     /// <summary>
     /// Menu item that builds the Week 5 SteamVR Playground from primitives and the stock SteamVR
-    /// Interaction System prefabs -- same "an Editor command builds the scene" convention as Week 2's
-    /// BuildPantherCamCastScene. Re-running it deletes and rebuilds SteamVR_Playground, so it is
-    /// always safe. Needs the SteamVR Unity Plugin (Week 4) in a Built-In render pipeline project.
+    /// Interaction System prefabs, so nothing is hand-placed. Re-running it deletes and rebuilds
+    /// SteamVR_Playground, so it is always safe. Needs the SteamVR Unity Plugin (Week 4) in a Built-In render pipeline project.
     ///
     /// Stations (the player starts at the origin, looking +Z):
     ///   1 Grab & throw table    2 Throw target (score, particles, chime)

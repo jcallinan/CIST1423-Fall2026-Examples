@@ -44,7 +44,7 @@ Lego bricks you'll use in the lab.
 
 ## 2. Lab: build the SteamVR Playground
 
-This folder follows the same pattern as Week 2: an Editor menu command builds the scene, so
+An Editor menu command builds the scene from primitives (the Week 2 lab's ground + prop + object idea), so
 nothing is hand-placed. Re-running it deletes and rebuilds `SteamVR_Playground`, so it is always safe.
 
 ![The SteamVR Playground: six numbered stations around the start point](docs/week05-playground-overview.png)
@@ -90,7 +90,7 @@ only lights up while you aim a teleport.*
 | [`Scripts/ResetStation.cs`](Assets/Scripts/ResetStation.cs) + [`ResettablePose.cs`](Assets/Scripts/ResettablePose.cs) | Remember start poses; never reset something that's in a hand | GolfVR `ResetRoundButton.cs` / `MiniGolfGameManager.ResetForNextGroup` |
 | [`Scripts/PlaygroundAudio.cs`](Assets/Scripts/PlaygroundAudio.cs) | Procedural sound with `AudioClip.Create` (no audio files) | GolfVR's putt, fanfare, and horn clips |
 | [`Scripts/MenuButtonSpawner.cs`](Assets/Scripts/MenuButtonSpawner.cs) | Reading a **SteamVR Input action** directly (`SteamVR_Action_Boolean.GetStateDown`) | GolfVR `QuickResetController.cs` |
-| [`Editor/BuildSteamVRPlayground.cs`](Assets/Editor/BuildSteamVRPlayground.cs) | Building a scene from code: stock prefabs, stations, signs, particle materials | Week 2 `BuildPantherCamCastScene.cs` |
+| [`Editor/BuildSteamVRPlayground.cs`](Assets/Editor/BuildSteamVRPlayground.cs) | Building a scene from code: stock prefabs, stations, signs, particle materials | Week 2 Primitives Lab (same shapes, now built from code) |
 
 ### Two ways to read input: know which one you need
 

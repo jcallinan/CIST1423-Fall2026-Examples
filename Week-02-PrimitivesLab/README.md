@@ -19,6 +19,7 @@ Push the scene to this repo under `Week-02-PrimitivesLab/`, plus a short
 
 ## Why it matters beyond this week
 
-This exact ground + prop + object pattern is what `Week-02-PantherCamCast`
-uses for the dock, the water, and the (placeholder, for now) Panther model —
-see that folder for the fishing-sim starter this unlocks.
+This exact ground + prop + object pattern comes back in Week 5: the SteamVR
+Playground ([`Week-05-SteamVR-Interactions`](../Week-05-SteamVR-Interactions))
+is built from primitives the same way, then made interactive with the SteamVR
+Interaction System.
