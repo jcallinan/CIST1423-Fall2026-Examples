@@ -8,8 +8,7 @@ namespace PantherCamCastEditor
     /// <summary>
     /// Menu item that builds the bare-bones Panther Cam & Cast starter scene out of primitives --
     /// same ground+prop+object pattern as the Week 2 primitives lab. Idempotent: skips objects
-    /// that already exist, safe to re-run after a script change (same convention Rhodium's
-    /// Setup menu uses).
+    /// that already exist, safe to re-run after a script change.
     /// </summary>
     public static class BuildPantherCamCastScene
     {

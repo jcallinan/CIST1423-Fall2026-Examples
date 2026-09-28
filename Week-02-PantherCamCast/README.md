@@ -16,7 +16,7 @@ Editor menu command assembles primitives, not hand-placed GameObjects.
 | --- | --- |
 | `Scripts/CastAndReelController.cs` | The state machine: Idle → Casting → Waiting → Biting → Reeling → Caught. Input-agnostic on purpose. |
 | `Scripts/Bobber.cs` | Visual feedback only — bobs on the water, dips on a bite. |
-| `Scripts/FishingRodInput.cs` | Desktop stand-in input. Swap for an XRI grab + trigger script later; `CastAndReelController` never has to change — same desktop/VR split Rhodium uses. |
+| `Scripts/FishingRodInput.cs` | Desktop stand-in input. Swap for an XRI grab + trigger script later; `CastAndReelController` never has to change. |
 | `Editor/BuildPantherCamCastScene.cs` | Idempotent scene builder — ground (dock), water plane, a gold placeholder cube standing in for the Panther, rod pivot, bobber, camera. |
 
 ## Next steps for this project

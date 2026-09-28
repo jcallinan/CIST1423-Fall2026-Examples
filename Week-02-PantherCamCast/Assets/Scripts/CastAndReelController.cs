@@ -6,8 +6,7 @@ namespace PantherCamCast
     /// <summary>
     /// The core fishing state machine: Idle -> Casting -> Waiting -> Biting -> Reeling -> Caught -> Idle.
     /// Deliberately input-agnostic: FishingRod (or a VR grab/trigger script) calls Cast()/Reel(),
-    /// this class only tracks state and timing. See 04_STATUS-style docs in Rhodium for the pattern
-    /// this mirrors: gameplay logic stays free of input/XR concerns.
+    /// this class only tracks state and timing. gameplay logic stays free of input/XR concerns.
     /// </summary>
     public enum FishingState { Idle, Casting, Waiting, Biting, Reeling, Caught }
 

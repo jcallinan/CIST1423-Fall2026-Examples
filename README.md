@@ -1,9 +1,6 @@
 # CIST 1423 — Virtual Reality Programming & Technology — Fall 2026
 
 Weekly example projects, one folder per week, following the course syllabus.
-This repo is separate from [Rhodium](https://github.com/jcallinan/Rhodium),
-the shared capstone project for both CIST 1422 and CIST 1423 — Rhodium isn't
-mapped week-by-week; these folders are.
 
 ## Weeks
 

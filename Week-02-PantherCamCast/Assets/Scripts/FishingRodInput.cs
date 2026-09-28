@@ -6,8 +6,7 @@ namespace PantherCamCast
     /// Desktop/keyboard stand-in for the eventual VR rod-grab + trigger input.
     /// Space = cast, hold Left Mouse (or R) while Biting/Reeling to reel.
     /// Swap this component out for an XRI grab+trigger script later -- CastAndReelController
-    /// never needs to change, same "engine-agnostic gameplay" split Rhodium uses for desktop vs VR.
-    /// </summary>
+    /// never needs to change, it is input-agnostic and only tracks state and timing.
     [RequireComponent(typeof(CastAndReelController))]
     public class FishingRodInput : MonoBehaviour
     {
