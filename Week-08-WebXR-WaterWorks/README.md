@@ -1,9 +1,5 @@
-# Week 7 — WebXR Building: WaterWorks Builder (multiplayer)
+# Week 8 — WebXR Building: WaterWorks Builder (multiplayer)
 
-> **Syllabus change:** Week 7 was *AR Development in Unity II* (AR Foundation plane detection and
-> touch placement). We use that week to **build in WebXR** instead: one URL that runs in a Quest
-> (passthrough MR), a Vive Pro 2 through SteamVR (VR), and any laptop browser.
-> The Week 12 multiplayer topic (textbook Ch. 8, PUN) comes back to this project's networking.
 
 WaterWorks Builder is a **multiplayer WebXR sandbox for laying out a small water system**:
 storage tank → gate valve → Y-strainer → centrifugal pump → riser → check valve → meter →
