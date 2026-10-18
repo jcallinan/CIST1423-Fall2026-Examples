@@ -2,7 +2,7 @@
 
 Weekly example projects, one folder per week, following the course syllabus.
 
-The [Chapter 5-9 project lab deck](Slide-Decks/Chapter%205-9%20Unity%20Project%20Labs.pptx) summarizes the Unity examples for Weeks 9-13.
+The [Chapter 5-9 project lab deck](Slide-Decks/Chapter%205-9%20Unity%20Project%20Labs.pptx) summarizes the Unity examples for Weeks 9-13. Each of those week folders is a Unity 2022.3.62f3 project with a ready-made scene, a `Week N` menu item that rebuilds the scene, and screenshots in its README.
 
 ## Weeks
 
