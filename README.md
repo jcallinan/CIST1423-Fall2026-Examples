@@ -2,6 +2,8 @@
 
 Weekly example projects, one folder per week, following the course syllabus.
 
+The [Chapter 5-9 project lab deck](Slide-Decks/Chapter%205-9%20Unity%20Project%20Labs.pptx) summarizes the Unity examples for Weeks 9-13.
+
 ## Weeks
 
 Follows the syllabus; every week has a deck in [`Slide-Decks`](Slide-Decks). **Change from the syllabus:**
@@ -15,14 +17,14 @@ Week 7 (*AR Development in Unity II*) is **WebXR building** instead.
 | 4 | VR Development in Unity I: SteamVR setup | [`Week-04-SteamVR-Setup`](Week-04-SteamVR-Setup) |
 | 5 | VR Development in Unity II: SteamVR Interaction System | [`Week-05-SteamVR-Interactions`](Week-05-SteamVR-Interactions) |
 | 6 | AR Development in Unity I: AR Foundation | — |
-| 7 | **WebXR building** (replaces AR II) (Exam 2) | [`Meta-WebXR-Samples`](Meta-WebXR-Samples), [`panther-builder`](Alumni-Weekend-2026/panther-builder), [`Week-07-WebXR-WaterWorks`](Week-07-WebXR-WaterWorks) |
-| 8 | Midterm project prototype | — |
-| 9 | Building interactive VR experiences (Ch. 5) | — |
-| 10 | Building interactive AR experiences (Ch. 6) | — |
-| 11 | Sound & visual effects (Ch. 7) (Exam 3) | GolfVR's procedural audio and fireworks |
-| 12 | Advanced XR: hands, gaze, multiplayer (Ch. 8) | [`Week-07-WebXR-WaterWorks`](Week-07-WebXR-WaterWorks) (relay + avatars) |
-| 13 | Best practices, trends & collaboration (Ch. 9) | — |
-| 14 | Testing & polishing | GolfVR editor tests, WaterWorks `npm test` |
+| 7 | **WebXR building** (replaces AR II)  | [`Meta-WebXR-Samples`](Meta-WebXR-Samples), [`panther-builder`](Alumni-Weekend-2026/panther-builder), [`Week-07-WebXR-WaterWorks`](Week-07-WebXR-WaterWorks) |
+| 8 | Testing | — |
+| 9 | Building interactive VR experiences (Ch. 5) | [`Week-09-Interactive-VR`](Week-09-Interactive-VR) |
+| 10 | Building interactive AR experiences (Ch. 6) | [`Week-10-Interactive-AR`](Week-10-Interactive-AR) |
+| 11 | Sound & visual effects (Ch. 7)  | [`Week-11-Sound-and-VFX`](Week-11-Sound-and-VFX) |
+| 12 | Advanced XR: hands, gaze, multiplayer (Ch. 8) | [`Week-12-Advanced-XR`](Week-12-Advanced-XR) (head-gaze dwell); [`Week-07-WebXR-WaterWorks`](Week-07-WebXR-WaterWorks) (relay + avatars) |
+| 13 | Best practices, trends & collaboration (Ch. 9) | [`Week-13-XR-Best-Practices`](Week-13-XR-Best-Practices) |
+| 14 | Testing & polishing | - |
 | 15 | Final showcase | — |
 | 16 | Final exam | — |
 
