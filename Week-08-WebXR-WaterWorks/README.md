@@ -24,7 +24,7 @@ are in the same room. Both browsers show 16 parts and 13 connections.*
 ## Run it
 
 ```bash
-cd Week-07-WebXR-WaterWorks
+cd Week-08-WebXR-WaterWorks
 npm install
 npm test          # 25 tests: every part's ports, snapping maths, room rules, and a live 2-client relay test
 npm start         # build + serve everything at https://<this-PC>:8443  (relay included)
