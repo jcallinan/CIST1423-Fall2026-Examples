@@ -1,6 +1,6 @@
 # Week 9 — Interactive VR: Animation, Buttons, and C#
 
-**Chapter 5 lab.** Build two small interactions in a fresh Unity 2022.3.62f3 project: a UI button that triggers an animation without a gameplay script, and a controller ray that changes a target using C#.
+**Chapter 5 lab.** Build interactions in a fresh Unity 2022.3.62f3 project, mirroring the book's car exhibition on primitives: UI buttons that trigger Animator clips without a gameplay script (a pulsing cube and the hold-to-spin "taxi"), a slider that scales a prop with C# (the "bus"), and a controller ray that changes a target using C#.
 
 ## Requirements
 
@@ -24,7 +24,9 @@ This folder is also a Unity 2022.3.62f3 project with the finished scene. Open th
 4. For the animation interaction, create a cube named `Animated Prop`. Use the Animation window to create an `Idle` clip and a short `Pulse` clip. Key the prop's local scale in `Pulse`: start at its normal size, grow briefly, then return to normal. Turn **Loop Time** off for `Pulse`.
 5. Open the Animator window for `Animated Prop`. Make `Idle` the default state, add a **Trigger** parameter named `Pulse`, and create an `Idle → Pulse` transition conditioned on that trigger. Add a `Pulse → Idle` transition with **Has Exit Time** enabled.
 6. Create a UI Button (GameObject → UI → Button). Unity creates a Canvas and EventSystem if needed. In the Button's **On Click()** list, add `Animated Prop`, choose **Animator → SetTrigger (string)**, and enter `Pulse`.
-7. Press Play and try both interactions. Save the scene in your own project if you want to keep it. If something behaves differently, compare it with the ready-made `InteractiveVR` scene.
+7. **Hold to spin (the book's taxi).** Create a flat cube named `Spinning Prop` with an Animator. Make a looping `Spin` clip (Rotation Y 0 → 360), and an Animator Controller with an empty default `Idle` state, `Idle → Spin` on a `Spin` trigger, and `Spin → Idle` on a `StopSpin` trigger (Has Exit Time off on both). Add a second UI Button with an **Event Trigger**: **Pointer Down** calls `Animator.SetTrigger("Spin")` and **Pointer Up** calls `SetTrigger("StopSpin")`. In VR these are the push button's Select Entered / Select Exited events.
+8. **Slider + C# (the book's bus).** Create a cylinder named `Scaled Prop`, a UI Slider (0.5 to 2, value 1), and an empty object with `SliderScaler`. Assign the prop to `Target` and the slider to `Slider`; the script scales the prop every frame.
+9. Press Play and try every interaction. Save the scene in your own project if you want to keep it. If something behaves differently, compare it with the ready-made `InteractiveVR` scene.
 
 ### Using the button in VR
 
@@ -35,6 +37,8 @@ For a headset-clickable button, set the Canvas to **World Space**, position it w
 | Test | Input | Expected result |
 | --- | --- | --- |
 | Animated button | Click the UI Button (or point/click it with the optional XR UI setup) | `Animated Prop` plays its one-shot scale pulse and returns to `Idle`. No custom gameplay script is attached to the button. |
+| Hold to spin | Press and hold **Hold to spin** | `Spinning Prop` rotates continuously until you release (Event Trigger → `SetTrigger("Spin")` / `("StopSpin")`). No script. |
+| Slider scale | Drag **Scale Slider** | `Scaled Prop` scales 0.5×–2× live via `SliderScaler` (C#). |
 | XR ray interaction | Aim the right controller at `Color Target` and press its trigger | The target changes between its original material color and the configured active color. A hit is logged in the Console. |
 | 2D ray fallback | Click the target in the Game view | The camera ray toggles the same target. |
 | 2D keyboard fallback | Press **Space** | The assigned fallback target toggles even without a camera ray hit. |
@@ -80,4 +84,4 @@ classDiagram
 
 - A screenshot or short clip showing both interactions.
 - A simple diagram of each event path (you can adapt the diagram above).
-- One sentence explaining which part used an Inspector event and which part used C#.
+- One sentence explaining which parts used an Inspector event (Pulse and Hold to spin) and which used C# (slider and ray).

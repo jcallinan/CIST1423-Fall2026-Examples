@@ -151,3 +151,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectedScaleMultiplier: 1.08
+  details:
+    displayName: Sphere
+    description: Gold sphere, 15 cm across

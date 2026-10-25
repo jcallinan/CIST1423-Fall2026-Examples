@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Reflection;
 using UnityEditor;
 using UnityEditor.Events;
@@ -64,7 +65,10 @@ namespace Chapter7SoundVFX.Editor
             player.transform.position = new Vector3(0f, 1f, 0f);
             Object.DestroyImmediate(player.GetComponent<CapsuleCollider>());
             player.AddComponent<CharacterController>();
+            player.AddComponent<VelocityEstimator>(); // beacons read it to scale volume and particles by speed
             player.GetComponent<Renderer>().sharedMaterial = Mat("Player", new Color(0.85f, 0.85f, 0.85f));
+
+            BuildFountain(mixer.FindMatchingGroups("Master")[0]);
             var camera = new GameObject("Main Camera", typeof(Camera), typeof(AudioListener)).GetComponent<Camera>();
             camera.tag = "MainCamera";
             camera.nearClipPlane = 0.05f;
@@ -120,9 +124,16 @@ namespace Chapter7SoundVFX.Editor
             main.loop = false;
             main.duration = 0.5f;
             main.startLifetime = 0.6f;
-            main.startSpeed = 2f;
+            main.startSpeed = new ParticleSystem.MinMaxCurve(1.5f, 2.5f);              // Random Between Two Constants
             main.startSize = 0.08f;
-            main.startColor = burstColor;
+            main.startColor = new ParticleSystem.MinMaxGradient(burstColor, Color.white); // Random Between Two Colors
+            var fade = burst.colorOverLifetime;                                           // fade out instead of popping off
+            fade.enabled = true;
+            var fadeGradient = new Gradient();
+            fadeGradient.SetKeys(
+                new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
+                new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(1f, 0.5f), new GradientAlphaKey(0f, 1f) });
+            fade.color = fadeGradient;
             var emission = burst.emission;
             emission.rateOverTime = 0f;
             emission.SetBursts(new[] { new ParticleSystem.Burst(0f, 35) });
@@ -140,6 +151,87 @@ namespace Chapter7SoundVFX.Editor
             so.FindProperty("toneSeconds").floatValue = 0.8f;
             so.FindProperty("retriggerCooldown").floatValue = 0.6f;
             so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        // A fountain behind the beacons that loops an imported .wav clip, the usual way to add sound
+        // (Ch. 7 p. 164). The builder writes the file itself so the lab still needs no downloads; swap in any
+        // royalty-free water sound by replacing Assets/Audio/FountainLoop.wav.
+        static void BuildFountain(AudioMixerGroup output)
+        {
+            const string clipPath = "Assets/Audio/FountainLoop.wav";
+            WriteWaterLoopWav(clipPath, 3f);
+            AssetDatabase.ImportAsset(clipPath);
+            var importer = (AudioImporter)AssetImporter.GetAtPath(clipPath);
+            var settings = importer.defaultSampleSettings;
+            settings.loadType = AudioClipLoadType.CompressedInMemory; // a long loop: keep it compressed in memory
+            importer.defaultSampleSettings = settings;
+            importer.forceToMono = true;                                 // 3D sources are mixed as mono anyway
+            importer.SaveAndReimport();
+
+            var basin = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            basin.name = "Fountain";
+            basin.transform.position = new Vector3(0f, 0.2f, 8f);
+            basin.transform.localScale = new Vector3(1.6f, 0.2f, 1.6f);
+            basin.GetComponent<Renderer>().sharedMaterial = Mat("Fountain Stone", new Color(0.6f, 0.6f, 0.62f));
+            var water = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            water.name = "Water";
+            Object.DestroyImmediate(water.GetComponent<Collider>());
+            water.transform.SetParent(basin.transform, false);
+            water.transform.localPosition = new Vector3(0f, 1f, 0f); // sits on the basin's top face
+            water.transform.localScale = new Vector3(0.9f, 0.1f, 0.9f);
+            water.GetComponent<Renderer>().sharedMaterial = Mat("Fountain Water", new Color(0.25f, 0.55f, 0.8f));
+
+            var source = basin.AddComponent<AudioSource>();
+            source.clip = AssetDatabase.LoadAssetAtPath<AudioClip>(clipPath);
+            source.loop = true;
+            source.playOnAwake = true;
+            source.spatialBlend = 1f;
+            source.volume = 0.5f;
+            source.rolloffMode = AudioRolloffMode.Linear;
+            source.minDistance = 1f;
+            source.maxDistance = 14f;
+            source.outputAudioMixerGroup = output; // Master, so the Feedback slider doesn't affect it
+        }
+
+        // Soft filtered noise, 16-bit mono PCM. The last 0.25 s fades into the first so the loop has no click.
+        static void WriteWaterLoopWav(string path, float seconds)
+        {
+            const int sampleRate = 44100;
+            int count = Mathf.RoundToInt(sampleRate * seconds);
+            int fade = sampleRate / 4;
+            var random = new System.Random(7);
+            var samples = new float[count + fade];
+            float low = 0f, slow = 0f;
+            for (int i = 0; i < samples.Length; i++)
+            {
+                float white = (float)(random.NextDouble() * 2.0 - 1.0);
+                low += (white - low) * 0.08f;                 // one-pole low-pass: hiss becomes a rush
+                slow += (white - slow) * 0.0004f;             // very slow drift for a gentle swell
+                samples[i] = low * (0.55f + Mathf.Abs(slow) * 4f);
+            }
+            for (int i = 0; i < fade; i++)
+            {
+                float t = (float)i / fade;
+                samples[i] = samples[i] * t + samples[count + i] * (1f - t);
+            }
+
+            using (var writer = new BinaryWriter(File.Create(path)))
+            {
+                writer.Write(System.Text.Encoding.ASCII.GetBytes("RIFF"));
+                writer.Write(36 + count * 2);
+                writer.Write(System.Text.Encoding.ASCII.GetBytes("WAVEfmt "));
+                writer.Write(16);
+                writer.Write((short)1);              // PCM
+                writer.Write((short)1);              // mono
+                writer.Write(sampleRate);
+                writer.Write(sampleRate * 2);        // byte rate
+                writer.Write((short)2);              // block align
+                writer.Write((short)16);             // bits per sample
+                writer.Write(System.Text.Encoding.ASCII.GetBytes("data"));
+                writer.Write(count * 2);
+                for (int i = 0; i < count; i++)
+                    writer.Write((short)Mathf.Clamp(samples[i] * 0.6f * short.MaxValue, short.MinValue, short.MaxValue));
+            }
         }
 
         static void BuildSliderUi(MixerLevelController controls)

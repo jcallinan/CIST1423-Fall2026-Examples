@@ -15,6 +15,9 @@ using UnityEngine.UI;
 ///                   (controller trigger, mouse click in the Game view, or Space)
 ///   Animated Prop - cube whose Animator plays Pulse when the UI Button's On Click() list calls
 ///                   Animator.SetTrigger("Pulse"); no gameplay script is attached to the button
+///   Spinning Prop - press and hold the Hold to Spin button: its Event Trigger calls SetTrigger("Spin")
+///                   on Pointer Down and SetTrigger("StopSpin") on Pointer Up (the book's taxi, p. 111)
+///   Scaled Prop   - SliderScaler sets its scale from the slider every frame (the book's bus, pp. 120-122)
 /// </summary>
 public static class BuildInteractiveVRScene
 {
@@ -53,7 +56,7 @@ public static class BuildInteractiveVRScene
         camera.transform.localRotation = Quaternion.Euler(14f, 0f, 0f);
 
         // C# interaction: Color Target.
-        var sphere = Primitive(PrimitiveType.Sphere, "Color Target", new Vector3(0.35f, 0.95f, 1.45f), Vector3.one * 0.32f,
+        var sphere = Primitive(PrimitiveType.Sphere, "Color Target", new Vector3(0.2f, 0.95f, 1.45f), Vector3.one * 0.32f,
             Mat("Color Target", new Color(0.18f, 0.32f, 0.72f)));
         var target = sphere.AddComponent<ColorToggleTarget>();
         var targetSo = new SerializedObject(target);
@@ -69,29 +72,56 @@ public static class BuildInteractiveVRScene
         interactorSo.ApplyModifiedPropertiesWithoutUndo();
 
         // Inspector-event interaction: Animated Prop + Animator Controller.
-        var prop = Primitive(PrimitiveType.Cube, "Animated Prop", new Vector3(-0.35f, 0.78f + PropScale * 0.5f, 1.45f),
+        var prop = Primitive(PrimitiveType.Cube, "Animated Prop", new Vector3(-0.2f, 0.78f + PropScale * 0.5f, 1.45f),
             Vector3.one * PropScale, Mat("Animated Prop", new Color(0.86f, 0.3f, 0.24f)));
         var animator = prop.AddComponent<Animator>();
         animator.runtimeAnimatorController = BuildController();
 
+        // Hold-to-spin interaction: a flat box on a short post, spun by a looping clip.
+        Primitive(PrimitiveType.Cylinder, "Spin Post", new Vector3(-0.58f, 0.82f, 1.45f), new Vector3(0.05f, 0.04f, 0.05f), Mat("Post", new Color(0.25f, 0.27f, 0.3f)));
+        var spinner = Primitive(PrimitiveType.Cube, "Spinning Prop", new Vector3(-0.58f, 0.9f, 1.45f), new Vector3(0.3f, 0.06f, 0.12f),
+            Mat("Spinning Prop", new Color(0.13f, 0.6f, 0.55f)));
+        var spinAnimator = spinner.AddComponent<Animator>();
+        spinAnimator.runtimeAnimatorController = BuildSpinController();
+
+        // Slider + C# interaction: SliderScaler scales this prop from the slider every frame.
+        var scaled = Primitive(PrimitiveType.Cylinder, "Scaled Prop", new Vector3(0.58f, 0.78f + 0.1f, 1.45f), new Vector3(0.16f, 0.1f, 0.16f),
+            Mat("Scaled Prop", new Color(0.55f, 0.35f, 0.75f)));
+
         // UI: World Space canvas above the table. A mouse can click it in the Game view; a headset needs
         // the optional XR Interaction Toolkit UI setup described in the README.
         var canvas = BuildCanvas(camera);
-        Label(canvas.transform, "Title", "Week 9: Interactive VR", 34, FontStyle.Bold, new Vector2(0f, 95f), new Vector2(560f, 50f));
+        Label(canvas.transform, "Title", "Week 9: Interactive VR", 34, FontStyle.Bold, new Vector2(0f, 110f), new Vector2(860f, 50f));
         Label(canvas.transform, "Instructions",
-            "Button: Animator.SetTrigger(\"Pulse\") via On Click()\nSphere: click it, press Space, or aim + trigger",
-            20, FontStyle.Normal, new Vector2(0f, 40f), new Vector2(560f, 60f));
-        var button = DefaultControls.CreateButton(UiResources()).GetComponent<Button>();
-        button.name = "Pulse Button";
-        var buttonRect = (RectTransform)button.transform;
-        buttonRect.SetParent(canvas.transform, false);
-        buttonRect.sizeDelta = new Vector2(260f, 64f);
-        buttonRect.anchoredPosition = new Vector2(0f, -40f);
-        var buttonText = button.GetComponentInChildren<Text>();
-        buttonText.text = "Pulse the prop";
-        buttonText.font = Font;
-        buttonText.fontSize = 26;
+            "Buttons use Inspector events (no script). The slider and the sphere use C#.\nSphere: click it, press Space, or aim + trigger",
+            20, FontStyle.Normal, new Vector2(0f, 55f), new Vector2(860f, 60f));
+
+        var button = Button(canvas.transform, "Pulse Button", "Pulse the prop", new Vector2(-290f, -45f));
         UnityEventTools.AddStringPersistentListener(button.onClick, new UnityAction<string>(animator.SetTrigger), "Pulse");
+
+        // Hold to spin: Pointer Down / Pointer Up entries on an Event Trigger, like the book's
+        // Select Entered / Select Exited events on an XR push button.
+        var holdButton = Button(canvas.transform, "Hold to Spin Button", "Hold to spin", new Vector2(0f, -45f));
+        var eventTrigger = holdButton.gameObject.AddComponent<EventTrigger>();
+        AddTriggerEntry(eventTrigger, EventTriggerType.PointerDown, spinAnimator, "Spin");
+        AddTriggerEntry(eventTrigger, EventTriggerType.PointerUp, spinAnimator, "StopSpin");
+
+        Label(canvas.transform, "Slider Label", "Scale the purple prop", 20, FontStyle.Normal, new Vector2(290f, -18f), new Vector2(260f, 30f));
+        var slider = DefaultControls.CreateSlider(UiResources()).GetComponent<Slider>();
+        slider.name = "Scale Slider";
+        var sliderRect = (RectTransform)slider.transform;
+        sliderRect.SetParent(canvas.transform, false);
+        sliderRect.sizeDelta = new Vector2(240f, 24f);
+        sliderRect.anchoredPosition = new Vector2(290f, -58f);
+        slider.minValue = 0.5f;
+        slider.maxValue = 2f;
+        slider.value = 1f;
+
+        var scaler = new GameObject("Slider Scaler Controller").AddComponent<SliderScaler>();
+        var scalerSo = new SerializedObject(scaler);
+        scalerSo.FindProperty("target").objectReferenceValue = scaled.transform;
+        scalerSo.FindProperty("slider").objectReferenceValue = slider;
+        scalerSo.ApplyModifiedPropertiesWithoutUndo();
 
         new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
 
@@ -138,13 +168,69 @@ public static class BuildInteractiveVRScene
         return controller;
     }
 
+    // Idle (empty state) -> Spin on the Spin trigger, Spin -> Idle on StopSpin, as in the book's taxi (pp. 108-111).
+    static RuntimeAnimatorController BuildSpinController()
+    {
+        var spin = new AnimationClip { name = "Spin" };
+        spin.SetCurve("", typeof(Transform), "localEulerAnglesRaw.x", AnimationCurve.Constant(0f, 2f, 0f));
+        spin.SetCurve("", typeof(Transform), "localEulerAnglesRaw.y", AnimationCurve.Linear(0f, 0f, 2f, 360f));
+        spin.SetCurve("", typeof(Transform), "localEulerAnglesRaw.z", AnimationCurve.Constant(0f, 2f, 0f));
+        SetLoop(spin, true);
+        Save(spin, AnimationsFolder + "/Spin.anim");
+
+        const string controllerPath = AnimationsFolder + "/SpinningProp.controller";
+        AssetDatabase.DeleteAsset(controllerPath);
+        var controller = AnimatorController.CreateAnimatorControllerAtPath(controllerPath);
+        controller.AddParameter("Spin", AnimatorControllerParameterType.Trigger);
+        controller.AddParameter("StopSpin", AnimatorControllerParameterType.Trigger);
+        var machine = controller.layers[0].stateMachine;
+        var idleState = machine.AddState("Idle");
+        // An empty state with Write Defaults on snaps the prop back to 0 degrees; off, it stops where it is.
+        idleState.writeDefaultValues = false;
+        var spinState = machine.AddState("Spin");
+        spinState.motion = spin;
+        machine.defaultState = idleState;
+
+        var toSpin = idleState.AddTransition(spinState);
+        toSpin.AddCondition(AnimatorConditionMode.If, 0f, "Spin");
+        toSpin.hasExitTime = false;
+        toSpin.duration = 0f;
+        var toIdle = spinState.AddTransition(idleState);
+        toIdle.AddCondition(AnimatorConditionMode.If, 0f, "StopSpin");
+        toIdle.hasExitTime = false;
+        toIdle.duration = 0f;
+        return controller;
+    }
+
+    static Button Button(Transform parent, string name, string text, Vector2 position)
+    {
+        var button = DefaultControls.CreateButton(UiResources()).GetComponent<Button>();
+        button.name = name;
+        var rect = (RectTransform)button.transform;
+        rect.SetParent(parent, false);
+        rect.sizeDelta = new Vector2(240f, 64f);
+        rect.anchoredPosition = position;
+        var label = button.GetComponentInChildren<Text>();
+        label.text = text;
+        label.font = Font;
+        label.fontSize = 26;
+        return button;
+    }
+
+    static void AddTriggerEntry(EventTrigger trigger, EventTriggerType type, Animator animator, string parameter)
+    {
+        var entry = new EventTrigger.Entry { eventID = type };
+        UnityEventTools.AddStringPersistentListener(entry.callback, new UnityAction<string>(animator.SetTrigger), parameter);
+        trigger.triggers.Add(entry);
+    }
+
     static Canvas BuildCanvas(Camera eventCamera)
     {
         var canvas = new GameObject("Canvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster)).GetComponent<Canvas>();
         canvas.renderMode = RenderMode.WorldSpace;
         canvas.worldCamera = eventCamera;
         var rect = (RectTransform)canvas.transform;
-        rect.sizeDelta = new Vector2(600f, 260f);
+        rect.sizeDelta = new Vector2(900f, 290f);
         rect.position = new Vector3(0f, 1.5f, 1.75f);
         rect.localScale = Vector3.one * 0.0018f;
         var panel = new GameObject("Panel", typeof(Image)).GetComponent<Image>();

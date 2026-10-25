@@ -22,41 +22,75 @@ namespace InteractiveAR
 
         [Header("UI")]
         [SerializeField] Button swapButton;
+        [SerializeField] Button previousButton;
         [SerializeField] Button deleteButton;
         [SerializeField] Button resetButton;
         [SerializeField] Button togglePlanesButton;
+        [SerializeField] Button placeButton;
         [SerializeField] Text statusText;
+
+        [Header("Placement reticle and details (optional)")]
+        [Tooltip("Shown on the surface under the screen center; the Place button drops the current variant there.")]
+        [SerializeField] Transform placementIndicator;
+        [Tooltip("World-space label that floats above the selected object and shows its details.")]
+        [SerializeField] Text detailsLabel;
+        [SerializeField] float detailsHeight = 0.08f;
+        [SerializeField, Min(0f)] float pinchSensitivity = 0.003f;
+        [SerializeField, Min(0f)] float scrollScaleStep = 0.1f;
 
         readonly List<ARPlaceable> _placedObjects = new List<ARPlaceable>();
         ARPlaceable _selectedObject;
         int _variantIndex;
         bool _showPlanes = true;
+        bool _indicatorPoseValid;
+        Pose _indicatorPose;
+        float _previousPinchDistance;
+        Transform _detailsRoot;
 
         void Awake()
         {
             if (arCamera == null) arCamera = Camera.main;
+            if (detailsLabel != null)
+            {
+                // includeInactive: the label's canvas starts hidden, and Graphic.canvas is null while inactive.
+                Canvas labelCanvas = detailsLabel.GetComponentInParent<Canvas>(true);
+                _detailsRoot = labelCanvas != null ? labelCanvas.transform : detailsLabel.transform;
+            }
             if (swapButton != null) swapButton.onClick.AddListener(SwapSelected);
+            if (previousButton != null) previousButton.onClick.AddListener(SwapToPrevious);
             if (deleteButton != null) deleteButton.onClick.AddListener(DeleteSelected);
             if (resetButton != null) resetButton.onClick.AddListener(ResetScene);
             if (togglePlanesButton != null) togglePlanesButton.onClick.AddListener(TogglePlanes);
+            if (placeButton != null) placeButton.onClick.AddListener(PlaceAtIndicator);
 
             if (planeManager != null) planeManager.planesChanged += OnPlanesChanged;
             SetStatus(objectPrefabs == null || objectPrefabs.Length == 0
                 ? "Add at least one placeable prefab in the Inspector."
                 : "Tap a detected plane to place an object.");
+            UpdateDetailsLabel();
         }
 
         void OnDestroy()
         {
             if (swapButton != null) swapButton.onClick.RemoveListener(SwapSelected);
+            if (previousButton != null) previousButton.onClick.RemoveListener(SwapToPrevious);
             if (deleteButton != null) deleteButton.onClick.RemoveListener(DeleteSelected);
             if (resetButton != null) resetButton.onClick.RemoveListener(ResetScene);
             if (togglePlanesButton != null) togglePlanesButton.onClick.RemoveListener(TogglePlanes);
+            if (placeButton != null) placeButton.onClick.RemoveListener(PlaceAtIndicator);
             if (planeManager != null) planeManager.planesChanged -= OnPlanesChanged;
         }
 
         void Update()
         {
+            UpdatePlacementIndicator();
+
+            if (Input.touchCount == 2)
+            {
+                PinchToScale(Input.GetTouch(0), Input.GetTouch(1));
+                return;
+            }
+
             if (Input.touchCount > 0)
             {
                 Touch touch = Input.GetTouch(0);
@@ -68,10 +102,24 @@ namespace InteractiveAR
 #if UNITY_EDITOR || UNITY_STANDALONE
             if (Input.GetMouseButtonDown(0) && !IsPointerOverUI())
                 HandleTap(Input.mousePosition);
+
+            // Editor stand-in for pinch: the scroll wheel scales the selected object.
+            float scroll = Input.mouseScrollDelta.y;
+            if (Mathf.Abs(scroll) > 0.01f)
+                ScaleSelected(1f + scroll * scrollScaleStep);
 #endif
         }
 
-        public void SwapSelected()
+        void LateUpdate()
+        {
+            UpdateDetailsLabel();
+        }
+
+        public void SwapSelected() => SwapBy(1);
+
+        public void SwapToPrevious() => SwapBy(-1);
+
+        public void SwapBy(int step)
         {
             if (objectPrefabs == null || objectPrefabs.Length == 0)
             {
@@ -79,7 +127,7 @@ namespace InteractiveAR
                 return;
             }
 
-            _variantIndex = (_variantIndex + 1) % objectPrefabs.Length;
+            _variantIndex = (_variantIndex + step + objectPrefabs.Length) % objectPrefabs.Length;
             if (_selectedObject != null)
             {
                 ARPlaceable oldObject = _selectedObject;
@@ -138,6 +186,73 @@ namespace InteractiveAR
             }
 
             SetStatus(_showPlanes ? "Plane visualization on." : "Plane visualization off.");
+        }
+
+        // The book's flow (Ch. 6 pp. 138-140): aim the reticle with the device, then press Place.
+        public void PlaceAtIndicator()
+        {
+            if (!_indicatorPoseValid)
+            {
+                SetStatus("No surface under the reticle yet. Move the device until it appears.");
+                return;
+            }
+
+            PlaceObject(_indicatorPose);
+        }
+
+        public void ScaleSelected(float factor)
+        {
+            if (_selectedObject == null) return;
+            _selectedObject.ScaleBy(factor);
+            SetStatus("Scale: " + _selectedObject.ScaleFactor.ToString("0.00") + "x");
+        }
+
+        void PinchToScale(Touch first, Touch second)
+        {
+            float distance = Vector2.Distance(first.position, second.position);
+            if (first.phase == TouchPhase.Began || second.phase == TouchPhase.Began)
+            {
+                _previousPinchDistance = distance;
+                return;
+            }
+
+            if (first.phase != TouchPhase.Moved && second.phase != TouchPhase.Moved) return;
+
+            ScaleSelected(1f + (distance - _previousPinchDistance) * pinchSensitivity);
+            _previousPinchDistance = distance;
+        }
+
+        void UpdatePlacementIndicator()
+        {
+            if (arCamera == null) return;
+
+            Vector2 screenCenter = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+            _indicatorPoseValid = TryGetPlacementPose(screenCenter, arCamera.ScreenPointToRay(screenCenter), out _indicatorPose);
+
+            if (placementIndicator == null) return;
+            placementIndicator.gameObject.SetActive(_indicatorPoseValid);
+            if (_indicatorPoseValid)
+                placementIndicator.SetPositionAndRotation(_indicatorPose.position, _indicatorPose.rotation);
+        }
+
+        void UpdateDetailsLabel()
+        {
+            if (_detailsRoot == null) return;
+
+            bool show = _selectedObject != null && _selectedObject.Details != null
+                && !string.IsNullOrEmpty(_selectedObject.Details.displayName);
+            Transform labelRoot = _detailsRoot;
+            labelRoot.gameObject.SetActive(show);
+            if (!show) return;
+
+            PlaceableDetails details = _selectedObject.Details;
+            detailsLabel.text = "<b>" + details.displayName + "</b>\n" + details.description;
+
+            // Float above the object and face the camera so it stays readable.
+            Bounds bounds = GetBounds(_selectedObject.gameObject);
+            labelRoot.position = new Vector3(bounds.center.x, bounds.max.y + detailsHeight, bounds.center.z);
+            if (arCamera != null)
+                labelRoot.rotation = Quaternion.LookRotation(labelRoot.position - arCamera.transform.position);
         }
 
         void HandleTap(Vector2 screenPosition)
@@ -235,6 +350,15 @@ namespace InteractiveAR
             Renderer[] renderers = plane.GetComponentsInChildren<Renderer>(true);
             foreach (Renderer planeRenderer in renderers)
                 planeRenderer.enabled = visible;
+        }
+
+        static Bounds GetBounds(GameObject target)
+        {
+            Renderer[] renderers = target.GetComponentsInChildren<Renderer>();
+            if (renderers.Length == 0) return new Bounds(target.transform.position, Vector3.zero);
+            Bounds bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++) bounds.Encapsulate(renderers[i].bounds);
+            return bounds;
         }
 
         void SetStatus(string message)
