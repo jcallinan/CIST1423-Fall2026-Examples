@@ -35,15 +35,16 @@ Both scenes use the `Cube`, `Sphere`, and `Cylinder` prefabs in `Assets/Prefabs`
 3. On the XR Origin, add **AR Plane Manager** and **AR Raycast Manager**. Assign a plane prefab to AR Plane Manager if you want visible plane boundaries. Keep the AR camera tagged `MainCamera`.
 4. Create at least two variants from built-in primitives (for example, a cube and a sphere). Give each a useful name, scale it to a tabletop size (about 0.1–0.2 Unity units), and ensure it has a Collider. Drag each from the Hierarchy into `Assets/Prefabs` to create a prefab, then remove its scene instance.
 5. Create an empty `PlacementController` object and attach `ARPlacementController`. Assign the XR Origin's AR Raycast Manager and AR Plane Manager, the AR camera, and your prefabs in the same order you want the Swap button to cycle through.
-6. Create a Screen Space - Overlay Canvas with four uGUI Buttons named **Swap**, **Delete**, **Reset**, and **Planes**, plus a uGUI Text for status. Assign them to the controller fields. Create an EventSystem if the Canvas did not add one. Button listeners are connected by the script; do not add duplicate On Click handlers.
-7. Press Play on a phone/tablet build to scan and place. The first prefab is the initial variant; Swap advances to the next variant and replaces the selected object in place.
+6. Create a Screen Space - Overlay Canvas with six uGUI Buttons named **Place**, **Previous**, **Swap**, **Delete**, **Reset**, and **Planes**, plus a uGUI Text for status. Assign them to the controller fields. Create an EventSystem if the Canvas did not add one. Button listeners are connected by the script; do not add duplicate On Click handlers.
+7. Optional, as in the book's food menu: add a flat **Placement Reticle** (a thin cylinder with no collider) and a world-space **Details Label** canvas with a Text child, then assign them to `Placement Indicator` and `Details Label`. Fill each prefab's `ARPlaceable` **Details** (name and description).
+8. Press Play on a phone/tablet build to scan and place. Aim the reticle at a detected surface and press **Place**, or tap a surface. The first prefab is the initial variant; Swap advances to the next variant and Previous goes back (both wrap around), replacing the selected object in place. Pinch with two fingers to scale the selected object (0.1×–10×); in the Editor, use the mouse scroll wheel.
 
 ### What the scripts do
 
 | Script | Responsibility |
 | --- | --- |
-| `Assets/Scripts/ARPlacementController.cs` | Reads touch or editor mouse taps, selects objects by collider, raycasts detected AR planes, places/swaps/deletes/resets objects, and wires up the UI buttons. |
-| `Assets/Scripts/ARPlaceable.cs` | Marks a selectable object and gives the current selection a small scale highlight. |
+| `Assets/Scripts/ARPlacementController.cs` | Reads touch or editor mouse taps, selects objects by collider, raycasts detected AR planes, shows the placement reticle, places/swaps/deletes/resets objects, pinch-scales the selection, shows its details label, and wires up the UI buttons. |
+| `Assets/Scripts/ARPlaceable.cs` | Marks a selectable object, gives the current selection a small scale highlight, clamps scaling to 0.1–10×, and holds a serializable `PlaceableDetails` (name, description), like the book's `Food` class. |
 
 ## 3. Editor and 2D fallback
 
@@ -61,7 +62,7 @@ When an AR Raycast Manager is assigned, a missed AR plane hit does **not** silen
 
 Captured from a Windows build of `InteractiveAR_EditorFallback.unity` (Unity 2022.3.62f3). Taps went through the controller's own tap handling; the buttons were pressed through their `onClick` listeners. The AR device scene was built and opened but not run on a phone or tablet.
 
-![Empty tabletop with the status bar and the Swap, Delete, Reset, Planes buttons](docs/week10-01-fallback-start.png)
+![Empty tabletop with the status bar and the Swap, Delete, Reset, Planes buttons (older capture; the scene now also has Place and Previous)](docs/week10-01-fallback-start.png)
 
 *Start: status asks for a tap.*
 
@@ -92,6 +93,7 @@ Captured from a Windows build of `InteractiveAR_EditorFallback.unity` (Unity 202
 - [ ] Tapping the plane places the current primitive; the selected item gets a subtle size highlight.
 - [ ] Tapping another placed item changes selection.
 - [ ] Swap replaces the selected primitive at the same location; repeated presses cycle through all assigned variants.
+- [ ] Place drops the current variant at the reticle; Previous cycles backward; a two-finger pinch (scroll wheel in the Editor) scales the selection; the details label floats above it.
 - [ ] Delete removes only the selected item; Reset clears all placed items and returns to the first variant.
 - [ ] Planes toggles plane visualization without stopping plane detection.
 - [ ] The mouse fallback supports place, select, swap, delete, and reset in the Editor.

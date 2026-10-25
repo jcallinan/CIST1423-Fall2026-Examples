@@ -3,7 +3,7 @@
 **Syllabus:** Ch. 8: hand tracking with XRI; eye- and head-gaze; a VR multiplayer app with PUN
 (Network Manager, avatar hands and face, animated hand models).
 **Deck:** *Week 12 Virtual Reality Advanced XR - Hands, Gaze and Multiplayer*.
-**Code:** [`Week-07-WebXR-WaterWorks`](../Week-07-WebXR-WaterWorks): `server/rooms.mjs`, `src/network.js`, `src/avatars.js`
+**Code:** [`Week-08-WebXR-WaterWorks`](../Week-08-WebXR-WaterWorks): `server/rooms.mjs`, `src/network.js`, `src/avatars.js`
 
 Students saw WaterWorks as *users* in Week 7. This week they read it as *engineers*, and compare it
 with the textbook's PUN app.

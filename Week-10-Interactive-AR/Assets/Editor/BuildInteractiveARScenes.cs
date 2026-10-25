@@ -33,9 +33,12 @@ namespace InteractiveAR.Editor
 
             GameObject[] variants =
             {
-                BuildVariant("Cube", PrimitiveType.Cube, new Vector3(0.15f, 0.15f, 0.15f), new Color(0.0f, 0.21f, 0.58f)),
-                BuildVariant("Sphere", PrimitiveType.Sphere, new Vector3(0.15f, 0.15f, 0.15f), new Color(1f, 0.72f, 0.11f)),
-                BuildVariant("Cylinder", PrimitiveType.Cylinder, new Vector3(0.1f, 0.1f, 0.1f), new Color(0.8f, 0.2f, 0.17f)),
+                BuildVariant("Cube", PrimitiveType.Cube, new Vector3(0.15f, 0.15f, 0.15f), new Color(0.0f, 0.21f, 0.58f),
+                    "Blue cube, 15 cm on each side"),
+                BuildVariant("Sphere", PrimitiveType.Sphere, new Vector3(0.15f, 0.15f, 0.15f), new Color(1f, 0.72f, 0.11f),
+                    "Gold sphere, 15 cm across"),
+                BuildVariant("Cylinder", PrimitiveType.Cylinder, new Vector3(0.1f, 0.1f, 0.1f), new Color(0.8f, 0.2f, 0.17f),
+                    "Red cylinder, 10 cm wide and 20 cm tall"),
             };
 
             BuildARScene(variants);
@@ -128,26 +131,68 @@ namespace InteractiveAR.Editor
             statusText.color = Color.white;
             statusText.text = "Tap a detected plane to place an object.";
 
-            var buttons = new Button[4];
-            string[] labels = { "Swap", "Delete", "Reset", "Planes" };
+            // Each button takes an equal share of the screen width, so six fit on a phone held upright.
+            string[] labels = { "Place", "Previous", "Swap", "Delete", "Reset", "Planes" };
+            var buttons = new Button[labels.Length];
             for (int i = 0; i < labels.Length; i++)
             {
                 var button = DefaultControls.CreateButton(UiResources()).GetComponent<Button>();
                 button.name = labels[i];
                 var rect = (RectTransform)button.transform;
                 rect.SetParent(canvas.transform, false);
-                rect.anchorMin = rect.anchorMax = new Vector2((i + 0.5f) / labels.Length, 0f);
+                rect.anchorMin = new Vector2((float)i / labels.Length, 0f);
+                rect.anchorMax = new Vector2((float)(i + 1) / labels.Length, 0f);
                 rect.pivot = new Vector2(0.5f, 0f);
-                rect.sizeDelta = new Vector2(220f, 110f);
+                rect.sizeDelta = new Vector2(-16f, 110f);
                 rect.anchoredPosition = new Vector2(0f, 40f);
                 var text = button.GetComponentInChildren<Text>();
                 text.text = labels[i];
                 text.font = Font;
-                text.fontSize = 40;
+                text.fontSize = 34;
+                text.resizeTextForBestFit = true;
+                text.resizeTextMinSize = 18;
+                text.resizeTextMaxSize = 34;
                 buttons[i] = button;
             }
 
             new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
+
+            // Reticle: a flat translucent disc on the surface under the screen center. No collider, so it
+            // never blocks the tap raycast that selects placed objects.
+            var reticle = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            reticle.name = "Placement Reticle";
+            Object.DestroyImmediate(reticle.GetComponent<Collider>());
+            reticle.transform.localScale = new Vector3(0.12f, 0.001f, 0.12f);
+            reticle.GetComponent<Renderer>().sharedMaterial = Mat("Placement Reticle", new Color(0.2f, 0.75f, 1f, 0.55f), "Sprites/Default");
+
+            // Details label: a small world-space canvas the controller moves above the selected object.
+            var labelCanvas = new GameObject("Details Label", typeof(Canvas)).GetComponent<Canvas>();
+            labelCanvas.renderMode = RenderMode.WorldSpace;
+            var labelRect = (RectTransform)labelCanvas.transform;
+            labelRect.sizeDelta = new Vector2(560f, 130f);
+            labelRect.localScale = Vector3.one * 0.0009f;
+            var labelBackground = new GameObject("Background", typeof(Image)).GetComponent<Image>();
+            labelBackground.rectTransform.SetParent(labelRect, false);
+            labelBackground.rectTransform.anchorMin = Vector2.zero;
+            labelBackground.rectTransform.anchorMax = Vector2.one;
+            labelBackground.rectTransform.sizeDelta = Vector2.zero;
+            labelBackground.color = new Color(0f, 0f, 0f, 0.7f);
+            labelBackground.raycastTarget = false;
+            var detailsText = new GameObject("Details Text", typeof(Text)).GetComponent<Text>();
+            detailsText.rectTransform.SetParent(labelRect, false);
+            detailsText.rectTransform.anchorMin = Vector2.zero;
+            detailsText.rectTransform.anchorMax = Vector2.one;
+            detailsText.rectTransform.sizeDelta = new Vector2(-24f, -12f);
+            detailsText.font = Font;
+            detailsText.fontSize = 34;
+            detailsText.resizeTextForBestFit = true;
+            detailsText.resizeTextMinSize = 16;
+            detailsText.resizeTextMaxSize = 34;
+            detailsText.supportRichText = true;
+            detailsText.alignment = TextAnchor.MiddleCenter;
+            detailsText.color = Color.white;
+            detailsText.raycastTarget = false;
+            labelCanvas.gameObject.SetActive(false);
 
             var controller = new GameObject("PlacementController").AddComponent<ARPlacementController>();
             var so = new SerializedObject(controller);
@@ -157,17 +202,21 @@ namespace InteractiveAR.Editor
             var prefabs = so.FindProperty("objectPrefabs");
             prefabs.arraySize = variants.Length;
             for (int i = 0; i < variants.Length; i++) prefabs.GetArrayElementAtIndex(i).objectReferenceValue = variants[i];
-            so.FindProperty("swapButton").objectReferenceValue = buttons[0];
-            so.FindProperty("deleteButton").objectReferenceValue = buttons[1];
-            so.FindProperty("resetButton").objectReferenceValue = buttons[2];
-            so.FindProperty("togglePlanesButton").objectReferenceValue = buttons[3];
+            so.FindProperty("placeButton").objectReferenceValue = buttons[0];
+            so.FindProperty("previousButton").objectReferenceValue = buttons[1];
+            so.FindProperty("swapButton").objectReferenceValue = buttons[2];
+            so.FindProperty("deleteButton").objectReferenceValue = buttons[3];
+            so.FindProperty("resetButton").objectReferenceValue = buttons[4];
+            so.FindProperty("togglePlanesButton").objectReferenceValue = buttons[5];
             so.FindProperty("statusText").objectReferenceValue = statusText;
+            so.FindProperty("placementIndicator").objectReferenceValue = reticle.transform;
+            so.FindProperty("detailsLabel").objectReferenceValue = detailsText;
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 
         // Prefab root sits on the surface; the primitive child is lifted so it rests on the plane instead of
         // sinking halfway into it. The selection highlight scales the root, so objects grow from the surface.
-        static GameObject BuildVariant(string name, PrimitiveType type, Vector3 scale, Color color)
+        static GameObject BuildVariant(string name, PrimitiveType type, Vector3 scale, Color color, string description)
         {
             var root = new GameObject(name);
             var body = GameObject.CreatePrimitive(type);
@@ -177,7 +226,11 @@ namespace InteractiveAR.Editor
             float height = type == PrimitiveType.Cylinder ? scale.y * 2f : scale.y;
             body.transform.localPosition = new Vector3(0f, height * 0.5f, 0f);
             body.GetComponent<Renderer>().sharedMaterial = Mat(name, color);
-            root.AddComponent<ARPlaceable>();
+            var placeable = root.AddComponent<ARPlaceable>();
+            var placeableSo = new SerializedObject(placeable);
+            placeableSo.FindProperty("details.displayName").stringValue = name;
+            placeableSo.FindProperty("details.description").stringValue = description;
+            placeableSo.ApplyModifiedPropertiesWithoutUndo();
 
             string path = "Assets/Prefabs/" + name + ".prefab";
             var prefab = PrefabUtility.SaveAsPrefabAsset(root, path);

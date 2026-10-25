@@ -12,6 +12,16 @@ namespace Chapter7SoundVFX
         [SerializeField, Range(0.08f, 4f)] float toneSeconds = 0.8f;
         [SerializeField, Min(0f)] float retriggerCooldown = 0.6f;
 
+        [Header("Impact speed (book Ch. 7 pp. 164-177)")]
+        [Tooltip("Scale the tone's volume and the number of particles by how fast the player arrives. " +
+                 "Needs a VelocityEstimator on the entering object or its root.")]
+        [SerializeField] bool scaleWithSpeed = true;
+        [SerializeField, Min(0f)] float minimumSpeed = 0.5f;
+        [SerializeField, Min(0.01f)] float maximumSpeed = 4f;
+        [Tooltip("Quietest volume at or below the minimum speed, so a slow approach is still audible.")]
+        [SerializeField, Range(0f, 1f)] float minimumVolume = 0.15f;
+        [SerializeField, Min(0f)] float particlesPerMeterPerSecond = 10f;
+
         AudioClip tone;
         float nextTriggerTime;
 
@@ -25,8 +35,21 @@ namespace Chapter7SoundVFX
         {
             if (!other.transform.root.CompareTag("Player")) return;
             if (Time.time < nextTriggerTime) return;
-
             nextTriggerTime = Time.time + retriggerCooldown;
+
+            VelocityEstimator estimator = other.GetComponentInParent<VelocityEstimator>();
+            if (scaleWithSpeed && estimator != null)
+            {
+                // InverseLerp maps the speed to 0-1 between the minimum and maximum speeds, as in the book.
+                float speed = estimator.Speed;
+                float strength = Mathf.InverseLerp(minimumSpeed, maximumSpeed, speed);
+                if (audioSource != null && tone != null)
+                    audioSource.PlayOneShot(tone, Mathf.Lerp(minimumVolume, 1f, strength));
+                if (burst != null)
+                    burst.Emit(Mathf.Max(1, Mathf.RoundToInt(speed * particlesPerMeterPerSecond)));
+                return;
+            }
+
             if (burst != null) burst.Play();
             if (audioSource != null && tone != null) audioSource.PlayOneShot(tone);
         }

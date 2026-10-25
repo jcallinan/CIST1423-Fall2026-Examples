@@ -9,7 +9,7 @@ examples. This folder is a guided tour of the ones worth your time, in the order
 > [Week 5](../Week-05-SteamVR-Interactions)). Read these samples to see the *same
 > ideas* (rigs, grab, rays, UI that follows you, passthrough) with nothing hidden
 > behind an editor. Our Alumni Weekend [`panther-builder`](../Alumni-Weekend-2026/panther-builder)
-> is built on the first one, and [`Week-07-WebXR-WaterWorks`](../Week-07-WebXR-WaterWorks) forks that again
+> is built on the first one, and [`Week-08-WebXR-WaterWorks`](../Week-08-WebXR-WaterWorks) forks that again
 > into a multiplayer water-system builder.
 
 ## The WebXR Showcases (meta-quest/webxr-showcases)

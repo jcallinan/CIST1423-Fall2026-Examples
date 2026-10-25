@@ -8,4 +8,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GazeDwell.unity
     guid: 1a05798932bb1074787517bac518ca56
-  m_configObjects: {}
+  - enabled: 1
+    path: Assets/Scenes/HandsAndGaze.unity
+    guid: 261830f3a960e49408425de83c33a1c2
+  m_configObjects:
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 5f2b3daa578b7f4499665b8531e9bad2, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: b0daad3308ead1e458fb20c56eb9b4b0, type: 2}

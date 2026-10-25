@@ -46,6 +46,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectedScaleMultiplier: 1.08
+  details:
+    displayName: Cylinder
+    description: Red cylinder, 10 cm wide and 20 cm tall
 --- !u!1 &1731277230991548948
 GameObject:
   m_ObjectHideFlags: 0

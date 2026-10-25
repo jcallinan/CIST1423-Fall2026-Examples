@@ -164,7 +164,7 @@ npm run serve     # https://localhost:8081
 ```
 Live build: <https://jcallinan.github.io/Alumni-Weekend-2026/>
 
-**Where it went next:** [`Week-07-WebXR-WaterWorks`](../../Week-07-WebXR-WaterWorks) forks this project
+**Where it went next:** [`Week-08-WebXR-WaterWorks`](../../Week-08-WebXR-WaterWorks) forks this project
 again into a *multiplayer* water-system builder: many parts, port snapping, and a WebSocket relay.
 
 **Assignment idea:** fork `panther-builder` again and turn it into *your* object.

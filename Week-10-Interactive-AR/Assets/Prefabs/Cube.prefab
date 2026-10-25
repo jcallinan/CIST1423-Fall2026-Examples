@@ -151,3 +151,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectedScaleMultiplier: 1.08
+  details:
+    displayName: Cube
+    description: Blue cube, 15 cm on each side

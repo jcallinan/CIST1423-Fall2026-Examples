@@ -8,11 +8,11 @@ through SteamVR, and laptops. **Exam 2 (Ch. 3–4) stays in this week.**
 (Building WaterWorks)*.
 **Student materials:** [`Meta-WebXR-Samples/Sneaker-Builder.md`](../Meta-WebXR-Samples/Sneaker-Builder.md) ·
 [`panther-builder/FROM-SNEAKER-TO-PANTHER.md`](../Alumni-Weekend-2026/panther-builder/FROM-SNEAKER-TO-PANTHER.md) ·
-[`Week-07-WebXR-WaterWorks/README.md`](../Week-07-WebXR-WaterWorks/README.md)
+[`Week-08-WebXR-WaterWorks/README.md`](../Week-08-WebXR-WaterWorks/README.md)
 
 | Part 1: read someone else's app | Part 2: build and share one |
 | --- | --- |
-| ![panther-builder](../Alumni-Weekend-2026/panther-builder/docs/panther-builder-gold.png) | ![WaterWorks multiplayer](../Week-07-WebXR-WaterWorks/docs/waterworks-multiplayer.png) |
+| ![panther-builder](../Alumni-Weekend-2026/panther-builder/docs/panther-builder-gold.png) | ![WaterWorks multiplayer](../Week-08-WebXR-WaterWorks/docs/waterworks-multiplayer.png) |
 
 ## Objectives
 
@@ -34,11 +34,11 @@ The exam takes 35 minutes of this class, so move the reading out of it:
 
 ## Before class
 
-- [ ] Lab PC: `cd Week-07-WebXR-WaterWorks && npm install && npm test` (expect 25 passing tests). Then `npm start` and note the printed `https://<IP>:8443` URL.
+- [ ] Lab PC: `cd Week-08-WebXR-WaterWorks && npm install && npm test` (expect 25 passing tests). Then `npm start` and note the printed `https://<IP>:8443` URL.
 - [ ] Check a Quest can reach that URL on the lab Wi-Fi (guest networks often block device-to-device traffic). Accept the certificate once on every device.
 - [ ] Vive Pro 2 station: SteamVR running, then Chrome/Edge at the same URL → **Build in VR**.
 - [ ] Write the URL on the board as a QR code (any QR generator).
-- [ ] Backup: [`docs/`](../Week-07-WebXR-WaterWorks/docs) screenshots, and two laptops in one room as the fallback demo.
+- [ ] Backup: [`docs/`](../Week-08-WebXR-WaterWorks/docs) screenshots, and two laptops in one room as the fallback demo.
 
 ## Timeline (150 min)
 
